@@ -135,6 +135,20 @@ public void drawSelectedTriangle(float[] v1, float[] v2, float[] v3){
         vertex(v3[0], v3[1]);
       endShape();
 
+      if(edgeSelected == 1){
+        stroke(255,0,0);
+        line(v1[0],v1[1],v2[0], v2[1]);
+      }
+      else if(edgeSelected == 2){
+        stroke(255,0,0);
+        line(v2[0],v2[1],v3[0], v3[1]);
+      }
+      else if(edgeSelected == 3){
+        stroke(255,0,0);
+        line(v3[0],v3[1],v1[0], v1[1]);
+      }
+
+      stroke(0,0,0);
       if(verticeSelected == -1){
         circle(v1[0], v1[1], VERTICE_RADIUS);
         circle(v2[0], v2[1], VERTICE_RADIUS);
@@ -166,7 +180,8 @@ public void mouseClicked(){
   PVector e1, e2, e3;
   PVector a1, a2, a3;
   float[] v1, v2, v3;
-   float distanceFromv1, distanceFromv2, distanceFromv3;
+  float distanceFromv1, distanceFromv2, distanceFromv3;
+
   // cross products 
   float e1CrossA1, e2CrossA2, e3CrossA3;   
 
@@ -205,7 +220,6 @@ public void mouseClicked(){
     if(currentlySelected == triangles.indexOf(tri)){
       // this triangle is already selected.
       System.out.println("already selected traingle "+currentlySelected);
-
       // check if the vertices are selected
       distanceFromv1 = dist(v1[0], v1[1], x, y);
       distanceFromv2 = dist(v2[0], v2[1], x, y);
@@ -215,29 +229,57 @@ public void mouseClicked(){
       // System.out.println("Dist 2 = "+ distanceFromv2);
       // System.out.println("Dist 3 = "+ distanceFromv3);
 
+      System.out.println("exa1:"+e1CrossA1);
+      System.out.println("exa2:"+e2CrossA2);
+      System.out.println("exa3:"+e3CrossA3);
 
       if(distanceFromv1 <= VERTICE_RADIUS){
         System.out.println("Vertice 1 is selected");
         verticeSelected = 1;
+        edgeSelected = -1;
          redraw();
          break;
       }
       else if(distanceFromv2 <= VERTICE_RADIUS){
         System.out.println("Vertice 2 is selected");
         verticeSelected = 2;
+        edgeSelected = -1;
         redraw();
         break;
       }
       else if(distanceFromv3 <= VERTICE_RADIUS){
         System.out.println("Vertice 3 is selected");
         verticeSelected = 3;
+        edgeSelected = -1;
          redraw();
          break;
       }
-      // the point was not on a vertex and not inside this triangle
+      else if(abs(e1CrossA1) <= 0.02f && abs(e2CrossA2) >= 0.02f && abs(e3CrossA3) >= 0.02f){
+          System.out.println("Edge 1 is selected");
+          edgeSelected = 1;
+          verticeSelected = -1;
+          break;
+      }
+      else if(abs(e1CrossA1) >= 0.02f && abs(e2CrossA2) <= 0.02f && abs(e3CrossA3) >= 0.02f){
+          System.out.println("Edge 2 is selected");
+          edgeSelected = 2; 
+          verticeSelected = -1;
+          redraw();
+          break;
+      }
+      else if(abs(e1CrossA1) >= 0.02f && abs(e2CrossA2) >= 0.02f && abs(e3CrossA3) <= 0.02f){
+          System.out.println("Edge 3 is selected");
+          edgeSelected = 3;
+          verticeSelected = -1;
+          redraw();
+          break;
+      }     
       // is this triangle still selected? If so, do nothing
       else if((e1CrossA1 > 0 && e2CrossA2 > 0 && e3CrossA3 > 0 ) ||
-            (e1CrossA1 < 0 && e2CrossA2 < 0 && e3CrossA3 < 0)){
+            (e1CrossA1 < 0 && e2CrossA2 < 0 && e3CrossA3 < 0)){               
+                edgeSelected = -1; 
+                verticeSelected = -1;
+                redraw();
                 break;
       }
       else {
@@ -252,6 +294,8 @@ public void mouseClicked(){
             (e1CrossA1 < 0 && e2CrossA2 < 0 && e3CrossA3 < 0)){
 
                 currentlySelected = triangles.indexOf(tri);
+                edgeSelected = -1;
+                verticeSelected = -1;
                 System.out.println("now selecting traingle "+currentlySelected);
                 // the first time a triangle is drawn
                 redraw();
@@ -264,7 +308,6 @@ public void mouseClicked(){
 
   redraw();
 }
-
 
 public void generateRandomTriangle(){
 
