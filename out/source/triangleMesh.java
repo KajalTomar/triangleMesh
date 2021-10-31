@@ -1,4 +1,20 @@
-final float VERTICE_RADIUS = 0.03;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class triangleMesh extends PApplet {
+
+final float VERTICE_RADIUS = 0.03f;
 ArrayList<float[]> vertices = new ArrayList<float[]>(); // [x,y]
 ArrayList<int[]> triangles = new ArrayList<int[]>(); // [v1, v1, v3, colour]
 int previouslySelected = -1;
@@ -6,12 +22,12 @@ int currentlySelected = -1;
 int verticeSelected = -1;
 int edgeSelected = -1; 
 
-void setup() {
-  size(640, 640, P3D);
+public void setup() {
+  
   frameRate(30);
 
   // all of this is optional:
-  colorMode(RGB, 1.0);
+  colorMode(RGB, 1.0f);
   ellipseMode(RADIUS);
   ortho(-1, 1, 1, -1);
   resetMatrix();
@@ -47,8 +63,8 @@ void setup() {
   noLoop();
 }
 
-void draw() {
-  background(0.9, 0.85, 0.85);
+public void draw() {
+  background(0.9f, 0.85f, 0.85f);
  // System.out.println("Total triangles = "+triangles.size());
   // your code here
 
@@ -59,13 +75,13 @@ void draw() {
   // use this for a unit coordinate system:
   resetMatrix();
   scale(1,-1);
-  image(controlPanel, -1, 1-2.0*PANEL_HEIGHT/height, 2.0*PANEL_WIDTH/width, 2.0*PANEL_HEIGHT/height);
+  image(controlPanel, -1, 1-2.0f*PANEL_HEIGHT/height, 2.0f*PANEL_WIDTH/width, 2.0f*PANEL_HEIGHT/height);
 
   // use this for a window coordinate system:
   //image(controlPanel, 0, height-PANEL_HEIGHT, PANEL_WIDTH, PANEL_HEIGHT);
 }
 
-void drawTriangles(){
+public void drawTriangles(){
     float[] v1, v2, v3; 
 
 
@@ -95,7 +111,7 @@ void drawTriangles(){
 
 }
 
-void drawUnselectedTriangle(float[] v1, float[] v2, float[] v3){
+public void drawUnselectedTriangle(float[] v1, float[] v2, float[] v3){
  
   strokeWeight(2);
   noFill();
@@ -108,7 +124,7 @@ void drawUnselectedTriangle(float[] v1, float[] v2, float[] v3){
     
 }
 
-void drawSelectedTriangle(float[] v1, float[] v2, float[] v3){
+public void drawSelectedTriangle(float[] v1, float[] v2, float[] v3){
     if(currentlySelected != -1){
       strokeWeight(4);
       fill(COLOURS[19]);
@@ -145,7 +161,7 @@ void drawSelectedTriangle(float[] v1, float[] v2, float[] v3){
 
 
 
-void mouseClicked(){
+public void mouseClicked(){
   boolean pInside = false;
   PVector e1, e2, e3;
   PVector a1, a2, a3;
@@ -154,8 +170,8 @@ void mouseClicked(){
   // cross products 
   float e1CrossA1, e2CrossA2, e3CrossA3;   
 
-  float x = 2.0 * mouseX / width - 1;
-  float y = 2.0 * (height-mouseY+1) / height - 1;
+  float x = 2.0f * mouseX / width - 1;
+  float y = 2.0f * (height-mouseY+1) / height - 1;
  //  println("window", mouseX, mouseY, "-> eye", x, y);
   
  // System.out.println("Clicked");
@@ -218,9 +234,6 @@ void mouseClicked(){
          redraw();
          break;
       }
-      else if(){
-        
-      }
       // the point was not on a vertex and not inside this triangle
       // is this triangle still selected? If so, do nothing
       else if((e1CrossA1 > 0 && e2CrossA2 > 0 && e3CrossA3 > 0 ) ||
@@ -253,7 +266,7 @@ void mouseClicked(){
 }
 
 
-void generateRandomTriangle(){
+public void generateRandomTriangle(){
 
     float[] v1 = new float[2];
     float[] v2 = new float[2];
@@ -287,7 +300,7 @@ void generateRandomTriangle(){
     triangles.add(triangle);
 }
 
-boolean isDegenerate(float[] v1, float[] v2, float[] v3){
+public boolean isDegenerate(float[] v1, float[] v2, float[] v3){
     boolean degenerate = false; 
     PVector e1, e2, e3;
 
@@ -305,7 +318,7 @@ boolean isDegenerate(float[] v1, float[] v2, float[] v3){
       
 }
 
-float crossProduct(PVector v1, PVector v2){
+public float crossProduct(PVector v1, PVector v2){
    return (v1.x*v2.y - v1.y*v2.x);
 }
 
@@ -315,150 +328,160 @@ int PANEL_ICONS = 10;
 int PANEL_WIDTH = 640; 
 int PANEL_HEIGHT = 64;
 
-final color COLOURS[] = {
-  #F0FFF0, // Honeydew
-  #4682B4, // Steel Blue
-  #483D8B, // Dark Slate Blue
-  #800080, // Web Purple
-  #FFD700, // Gold
-  #D2691E, // Chocolate
-  #FFF5EE, // Seashell
-  #EE82EE, // Violet
-  #AFEEEE, // Pale Turquoise
-  #696969, // Dim Gray
-  #FFE4E1, // Misty Rose
-  #BC8F8F, // Rosy Brown
-  #87CEFA, // Light Sky Blue
-  #8A2BE2, // Blue Violet
-  #F5F5DC, // Beige
-  #FFFF00, // Yellow
-  #B8860B, // Dark Goldenrod
-  #00FFFF, // Cyan
-  #D2B48C, // Tan
-  #6495ED, // Cornflower Blue
-  #F08080, // Light Coral
-  #90EE90, // Light Green
-  #FF00FF, // Magenta
-  #F0E68C, // Khaki
-  #FF4500, // Orange Red
-  #800000, // Web Maroon
-  #C71585, // Medium Violet Red
-  #00BFFF, // Deep Sky Blue
-  #008000, // Web Green
-  #ADD8E6, // Light Blue
-  #556B2F, // Dark Olive Green
-  #FFA500, // Orange
-  #FFB6C1, // Light Pink
-  #006400, // Dark Green
-  #D8BFD8, // Thistle
-  #E6E6FA, // Lavender
-  #008B8B, // Dark Cyan
-  #000080, // Navy Blue
-  #D3D3D3, // Light Gray
-  #0000CD, // Medium Blue
-  #FFFFFF, // White
-  #FFFFF0, // Ivory
-  #F4A460, // Sandy Brown
-  #191970, // Midnight Blue
-  #6A5ACD, // Slate Blue
-  #BEBEBE, // Gray
-  #ADFF2F, // Green Yellow
-  #5F9EA0, // Cadet Blue
-  #FFF8DC, // Cornsilk
-  #FFA07A, // Light Salmon
-  #FFEFD5, // Papaya Whip
-  #6B8E23, // Olive Drab
-  #FF0000, // Red
-  #FFFAFA, // Snow
-  #E9967A, // Dark Salmon
-  #98FB98, // Pale Green
-  #808000, // Olive
-  #FA8072, // Salmon
-  #4B0082, // Indigo
-  #CD853F, // Peru
-  #00CED1, // Dark Turquoise
-  #B03060, // Maroon
-  #663399, // Rebecca Purple
-  #F5FFFA, // Mint Cream
-  #1E90FF, // Dodger Blue
-  #008080, // Teal
-  #B22222, // Firebrick
-  #DCDCDC, // Gainsboro
-  #FF6347, // Tomato
-  #F0F8FF, // Alice Blue
-  #FF8C00, // Dark Orange
-  #FFF0F5, // Lavender Blush
-  #228B22, // Forest Green
-  #F8F8FF, // Ghost White
-  #66CDAA, // Medium Aquamarine
-  #DAA520, // Goldenrod
-  #A0522D, // Sienna
-  #C0C0C0, // Silver
-  #E0FFFF, // Light Cyan
-  #00008B, // Dark Blue
-  #87CEEB, // Sky Blue
-  #8B008B, // Dark Magenta
-  #7B68EE, // Medium Slate Blue
-  #778899, // Light Slate Gray
-  #20B2AA, // Light Sea Green
-  #FFEBCD, // Blanched Almond
-  #DEB887, // Burlywood
-  #7CFC00, // Lawn Green
-  #CD5C5C, // Indian Red
-  #7FFFD4, // Aquamarine
-  #FAF0E6, // Linen
-  #00FF00, // Green
-  #8B4513, // Saddle Brown
-  #FF69B4, // Hot Pink
-  #FFE4C4, // Bisque
-  #FF1493, // Deep Pink
-  #FFFACD, // Lemon Chiffon
-  #9ACD32, // Yellow Green
-  #9370DB, // Medium Purple
-  #FFC0CB, // Pink
-  #808080, // Web Gray
-  #DB7093, // Pale Violet Red
-  #B0C4DE, // Light Steel Blue
-  #00FF00, // Lime
-  #DC143C, // Crimson
-  #DA70D6, // Orchid
-  #8FBC8F, // Dark Sea Green
-  #3CB371, // Medium Sea Green
-  #00FA9A, // Medium Spring Green
-  #FAEBD7, // Antique White
-  #BA55D3, // Medium Orchid
-  #FFE4B5, // Moccasin
-  #DDA0DD, // Plum
-  #FFDAB9, // Peach Puff
-  #FF7F50, // Coral
-  #FFFFE0, // Light Yellow
-  #708090, // Slate Gray
-  #00FFFF, // Aqua
-  #FAFAD2, // Light Goldenrod
-  #9932CC, // Dark Orchid
-  #2E8B57, // Sea Green
-  #A52A2A, // Brown
-  #B0E0E6, // Powder Blue
-  #48D1CC, // Medium Turquoise
-  #FFFAF0, // Floral White
-  #A9A9A9, // Dark Gray
-  #40E0D0, // Turquoise
-  #F5F5F5, // White Smoke
-  #4169E1, // Royal Blue
-  #FF00FF, // Fuchsia
-  #32CD32, // Lime Green
-  #00FF7F, // Spring Green
-  #A020F0, // Purple
-  #000000, // Black
-  #BDB76B, // Dark Khaki
-  #F5DEB3, // Wheat
-  #F0FFFF, // Azure
-  #FFDEAD, // Navajo White
-  #FDF5E6, // Old Lace
-  #9400D3, // Dark Violet
-  #7FFF00, // Chartreuse
-  #0000FF, // Blue
-  #EEE8AA, // Pale Goldenrod
-  #8B0000, // Dark Red
-  #2F4F4F, // Dark Slate Gray
+final int COLOURS[] = {
+  0xffF0FFF0, // Honeydew
+  0xff4682B4, // Steel Blue
+  0xff483D8B, // Dark Slate Blue
+  0xff800080, // Web Purple
+  0xffFFD700, // Gold
+  0xffD2691E, // Chocolate
+  0xffFFF5EE, // Seashell
+  0xffEE82EE, // Violet
+  0xffAFEEEE, // Pale Turquoise
+  0xff696969, // Dim Gray
+  0xffFFE4E1, // Misty Rose
+  0xffBC8F8F, // Rosy Brown
+  0xff87CEFA, // Light Sky Blue
+  0xff8A2BE2, // Blue Violet
+  0xffF5F5DC, // Beige
+  0xffFFFF00, // Yellow
+  0xffB8860B, // Dark Goldenrod
+  0xff00FFFF, // Cyan
+  0xffD2B48C, // Tan
+  0xff6495ED, // Cornflower Blue
+  0xffF08080, // Light Coral
+  0xff90EE90, // Light Green
+  0xffFF00FF, // Magenta
+  0xffF0E68C, // Khaki
+  0xffFF4500, // Orange Red
+  0xff800000, // Web Maroon
+  0xffC71585, // Medium Violet Red
+  0xff00BFFF, // Deep Sky Blue
+  0xff008000, // Web Green
+  0xffADD8E6, // Light Blue
+  0xff556B2F, // Dark Olive Green
+  0xffFFA500, // Orange
+  0xffFFB6C1, // Light Pink
+  0xff006400, // Dark Green
+  0xffD8BFD8, // Thistle
+  0xffE6E6FA, // Lavender
+  0xff008B8B, // Dark Cyan
+  0xff000080, // Navy Blue
+  0xffD3D3D3, // Light Gray
+  0xff0000CD, // Medium Blue
+  0xffFFFFFF, // White
+  0xffFFFFF0, // Ivory
+  0xffF4A460, // Sandy Brown
+  0xff191970, // Midnight Blue
+  0xff6A5ACD, // Slate Blue
+  0xffBEBEBE, // Gray
+  0xffADFF2F, // Green Yellow
+  0xff5F9EA0, // Cadet Blue
+  0xffFFF8DC, // Cornsilk
+  0xffFFA07A, // Light Salmon
+  0xffFFEFD5, // Papaya Whip
+  0xff6B8E23, // Olive Drab
+  0xffFF0000, // Red
+  0xffFFFAFA, // Snow
+  0xffE9967A, // Dark Salmon
+  0xff98FB98, // Pale Green
+  0xff808000, // Olive
+  0xffFA8072, // Salmon
+  0xff4B0082, // Indigo
+  0xffCD853F, // Peru
+  0xff00CED1, // Dark Turquoise
+  0xffB03060, // Maroon
+  0xff663399, // Rebecca Purple
+  0xffF5FFFA, // Mint Cream
+  0xff1E90FF, // Dodger Blue
+  0xff008080, // Teal
+  0xffB22222, // Firebrick
+  0xffDCDCDC, // Gainsboro
+  0xffFF6347, // Tomato
+  0xffF0F8FF, // Alice Blue
+  0xffFF8C00, // Dark Orange
+  0xffFFF0F5, // Lavender Blush
+  0xff228B22, // Forest Green
+  0xffF8F8FF, // Ghost White
+  0xff66CDAA, // Medium Aquamarine
+  0xffDAA520, // Goldenrod
+  0xffA0522D, // Sienna
+  0xffC0C0C0, // Silver
+  0xffE0FFFF, // Light Cyan
+  0xff00008B, // Dark Blue
+  0xff87CEEB, // Sky Blue
+  0xff8B008B, // Dark Magenta
+  0xff7B68EE, // Medium Slate Blue
+  0xff778899, // Light Slate Gray
+  0xff20B2AA, // Light Sea Green
+  0xffFFEBCD, // Blanched Almond
+  0xffDEB887, // Burlywood
+  0xff7CFC00, // Lawn Green
+  0xffCD5C5C, // Indian Red
+  0xff7FFFD4, // Aquamarine
+  0xffFAF0E6, // Linen
+  0xff00FF00, // Green
+  0xff8B4513, // Saddle Brown
+  0xffFF69B4, // Hot Pink
+  0xffFFE4C4, // Bisque
+  0xffFF1493, // Deep Pink
+  0xffFFFACD, // Lemon Chiffon
+  0xff9ACD32, // Yellow Green
+  0xff9370DB, // Medium Purple
+  0xffFFC0CB, // Pink
+  0xff808080, // Web Gray
+  0xffDB7093, // Pale Violet Red
+  0xffB0C4DE, // Light Steel Blue
+  0xff00FF00, // Lime
+  0xffDC143C, // Crimson
+  0xffDA70D6, // Orchid
+  0xff8FBC8F, // Dark Sea Green
+  0xff3CB371, // Medium Sea Green
+  0xff00FA9A, // Medium Spring Green
+  0xffFAEBD7, // Antique White
+  0xffBA55D3, // Medium Orchid
+  0xffFFE4B5, // Moccasin
+  0xffDDA0DD, // Plum
+  0xffFFDAB9, // Peach Puff
+  0xffFF7F50, // Coral
+  0xffFFFFE0, // Light Yellow
+  0xff708090, // Slate Gray
+  0xff00FFFF, // Aqua
+  0xffFAFAD2, // Light Goldenrod
+  0xff9932CC, // Dark Orchid
+  0xff2E8B57, // Sea Green
+  0xffA52A2A, // Brown
+  0xffB0E0E6, // Powder Blue
+  0xff48D1CC, // Medium Turquoise
+  0xffFFFAF0, // Floral White
+  0xffA9A9A9, // Dark Gray
+  0xff40E0D0, // Turquoise
+  0xffF5F5F5, // White Smoke
+  0xff4169E1, // Royal Blue
+  0xffFF00FF, // Fuchsia
+  0xff32CD32, // Lime Green
+  0xff00FF7F, // Spring Green
+  0xffA020F0, // Purple
+  0xff000000, // Black
+  0xffBDB76B, // Dark Khaki
+  0xffF5DEB3, // Wheat
+  0xffF0FFFF, // Azure
+  0xffFFDEAD, // Navajo White
+  0xffFDF5E6, // Old Lace
+  0xff9400D3, // Dark Violet
+  0xff7FFF00, // Chartreuse
+  0xff0000FF, // Blue
+  0xffEEE8AA, // Pale Goldenrod
+  0xff8B0000, // Dark Red
+  0xff2F4F4F, // Dark Slate Gray
 };
+  public void settings() {  size(640, 640, P3D); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "triangleMesh" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
+}
