@@ -1,10 +1,3 @@
-//------------------------------------------------------------------------------
-// NAME: Kajal Tomar
-// STUDENT NUMBER: 7793306
-// COURSE: COMP 3490
-// INSTRUCTOR: John Braico
-// ASSIGNMENT: 2, QUESTION: 2
-//------------------------------------------------------------------------------
 final float VERTICE_RADIUS = 0.03; // to set the radius for the handles
 
 ArrayList<float[]> vertices = new ArrayList<float[]>(); // [x,y]
